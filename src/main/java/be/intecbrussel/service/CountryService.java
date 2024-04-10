@@ -1,17 +1,24 @@
 package be.intecbrussel.service;
 
+import be.intecbrussel.connection.EntityManagerProvider;
 import be.intecbrussel.model.Country;
 import be.intecbrussel.model.President;
 import be.intecbrussel.repository.CountryRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CountryService {
-    CountryRepository countryRepository = new CountryRepository();
+    private CountryRepository countryRepository;
+    EntityManagerProvider entityManagerProvider;
 
-    public Country getCountry(Country country) {
-        countryRepository.find(country.getName());
-        return country;
+    public CountryService() {
+        this.entityManagerProvider = new EntityManagerProvider();
+        this.countryRepository = new CountryRepository();
+    }
+
+    public Optional<Country> getCountry(String name) {
+        return Optional.ofNullable(countryRepository.find(name));
     }
 
     public List<Country> getAllCountries() {
@@ -20,19 +27,14 @@ public class CountryService {
 
     public Country addCountry(String name, int population, President president) {
         Country country = new Country(name, population, president);
-        countryRepository.add(country);
-        return country;
+        return countryRepository.add(country);
     }
 
-
+    public void updateCountry(Country country) {
+        countryRepository.update(country);
+    }
 
     public void deleteCountry(Country country) {
         countryRepository.delete(country);
     }
-
-    public Country updateCountry(Country country) {
-        countryRepository.update(country);
-        return country;
-    }
-
 }
